@@ -2,12 +2,6 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const { BOT_TOKEN } = require('./config');
 
-
-console.log(BOT_TOKEN);
-client.login(BOT_TOKEN);
-
-
-
 client.on('ready', () => console.log('Bot is active'));
 
 client.on('message', (msg) => {
@@ -17,3 +11,5 @@ client.on('message', (msg) => {
   }
 
 });
+
+client.login(BOT_TOKEN);
