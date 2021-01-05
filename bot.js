@@ -2,18 +2,9 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const { BOT_TOKEN } = require("./config");
 
-async function createAPIMessage(interaction, content) {
-  const apiMessage = await discord.APIMessage.create(
-    client.channels.resolve(interaction.channel_id),
-    content
-  )
-    .resolveData()
-    .resolveFiles();
-  return { ...apiMessage.data };
-}
-
 client.on("ready", () => {
-  console.log("Bot is active");
+  console.log("ready");
+
   client.api
     .applications(client.user.id)
     .guilds("775112162246787083")
@@ -23,13 +14,15 @@ client.on("ready", () => {
         description: "Replies with Hello World!",
       },
     });
+
   client.api
     .applications(client.user.id)
-    .guilds("775112162246787083")
+    .guilds("699722023508770836")
     .commands.post({
       data: {
         name: "echo",
-        description: "Echos your text as an embed",
+        description: "Echos your text as an embed!",
+
         options: [
           {
             name: "content",
@@ -40,42 +33,51 @@ client.on("ready", () => {
         ],
       },
     });
+
   client.ws.on("INTERACTION_CREATE", async (interaction) => {
     const command = interaction.data.name.toLowerCase();
     const args = interaction.data.options;
 
     if (command == "hello") {
-      interaction.client.api
-        .interaction(interaction.id, interaction.token)
-        .callback.post({
+      client.api.interactions(interaction.id, interaction.token).callback.post({
+        data: {
+          type: 4,
           data: {
-            type: 4,
-            data: {
-              content: "Hello World!",
-            },
+            content: "Hello World!",
           },
-        });
-      if (command == "echo") {
-        const description = args.find(
-          (arg) => arg.name.toLowerCase() == "content"
-        ).vaule;
-        const embed = new Discord.MessageEmbed()
-          .setTitle("Echo!")
-          .setDescription(description)
-          .setAuthor(interaction.member.user.username);
-        client.api
-          .interactions(interaction.id, interaction.token)
-          .callback.post({
-            data: {
-              type: 4,
-              data: await createAPIMessage(interaction, embed),
-            },
-          });
-      }
+        },
+      });
+    }
+
+    if (command == "echo") {
+      const description = args.find(
+        (arg) => arg.name.toLowerCase() == "content"
+      ).value;
+      const embed = new discord.MessageEmbed()
+        .setTitle("Echo!")
+        .setDescription(description)
+        .setAuthor(interaction.member.user.username);
+
+      client.api.interactions(interaction.id, interaction.token).callback.post({
+        data: {
+          type: 4,
+          data: await createAPIMessage(interaction, embed),
+        },
+      });
     }
   });
 });
 
+async function createAPIMessage(interaction, content) {
+  const apiMessage = await discord.APIMessage.create(
+    client.channels.resolve(interaction.channel_id),
+    content
+  )
+    .resolveData()
+    .resolveFiles();
+
+  return { ...apiMessage.data, files: apiMessage.files };
+}
 client.on("message", (msg) => {
   if (msg.content == "Ping" || msg.content == "ping") {
     msg.reply("Pong");
