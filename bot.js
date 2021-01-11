@@ -10,6 +10,11 @@ client.on("ready", () => {
       msg.reply("Pong");
     }
   });
+  client.on("message", (msg) => {
+    if (msg.content == "Quing" || msg.content == "quing") {
+      msg.reply("Qoung");
+    }
+  });
 });
 
 client.login(BOT_TOKEN);
