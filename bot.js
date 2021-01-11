@@ -12,7 +12,7 @@ client.on("ready", () => {
   });
   client.on("message", (msg) => {
     if (msg.content == "Quing" || msg.content == "quing") {
-      msg.reply("Qoung");
+      msg.reply("Quong");
     }
   });
 });
